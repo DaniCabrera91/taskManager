@@ -9,7 +9,7 @@ module.exports = {
                     content: {
                         'application/json': {
                             schema: {
-                                $ref: '#/components/schemas/TaskInput',
+                                $ref: '#/components/schemas/taskInput',
                             },
                         },
                     },
@@ -20,7 +20,7 @@ module.exports = {
                         content: {
                             'application/json': {
                                 schema: {
-                                    $ref: '#/components/schemas/Task',
+                                    $ref: '#/components/schemas/task',
                                 },
                             },
                         },
@@ -44,7 +44,7 @@ module.exports = {
                                 schema: {
                                     type: 'array',
                                     items: {
-                                        $ref: '#/components/schemas/Task',
+                                        $ref: '#/components/schemas/task',
                                     },
                                 },
                             },
@@ -56,19 +56,18 @@ module.exports = {
                 },
             },
         },
-        '/tasks/{taskId}': {
+        '/tasks/{_id}': {
             get: {
                 tags: ['Tasks'],
                 summary: 'Get a task by ID',
                 parameters: [
                     {
-                        name: 'taskId',
+                        name: '_id',
                         in: 'path',
                         required: true,
                         description: 'ID of the task',
                         schema: {
                             type: 'string',
-                            format: 'uuid',
                         },
                     },
                 ],
@@ -78,57 +77,10 @@ module.exports = {
                         content: {
                             'application/json': {
                                 schema: {
-                                    $ref: '#/components/schemas/Task',
+                                    $ref: '#/components/schemas/task',
                                 },
                             },
                         },
-                    },
-                    404: {
-                        description: 'Task not found',
-                    },
-                    500: {
-                        description: 'Server error',
-                    },
-                },
-            },
-            put: {
-                tags: ['Tasks'],
-                summary: 'Update a task by ID',
-                parameters: [
-                    {
-                        name: 'taskId',
-                        in: 'path',
-                        required: true,
-                        description: 'ID of the task',
-                        schema: {
-                            type: 'string',
-                            format: 'uuid',
-                        },
-                    },
-                ],
-                requestBody: {
-                    required: true,
-                    content: {
-                        'application/json': {
-                            schema: {
-                                $ref: '#/components/schemas/TaskInput',
-                            },
-                        },
-                    },
-                },
-                responses: {
-                    200: {
-                        description: 'Task updated successfully',
-                        content: {
-                            'application/json': {
-                                schema: {
-                                    $ref: '#/components/schemas/Task',
-                                },
-                            },
-                        },
-                    },
-                    400: {
-                        description: 'Bad request (invalid input)',
                     },
                     404: {
                         description: 'Task not found',
@@ -143,13 +95,12 @@ module.exports = {
                 summary: 'Delete a task by ID',
                 parameters: [
                     {
-                        name: 'taskId',
+                        name: '_id',
                         in: 'path',
                         required: true,
                         description: 'ID of the task',
                         schema: {
                             type: 'string',
-                            format: 'uuid',
                         },
                     },
                 ],
@@ -179,5 +130,88 @@ module.exports = {
                 },
             },
         },
+        '/tasks/completed/{_id}': {
+            put: {
+                tags: ['Tasks'],
+                summary: 'Mark a task as completed',
+                parameters: [
+                    {
+                        name: '_id',
+                        in: 'path',
+                        required: true,
+                        description: 'ID of the task',
+                        schema: {
+                            type: 'string',
+                        },
+                    },
+                ],
+                responses: {
+                    200: {
+                        description: 'Task updated successfully',
+                        content: {
+                            'application/json': {
+                                schema: {
+                                    $ref: '#/components/schemas/task',
+                                },
+                            },
+                        },
+                    },
+                    404: {
+                        description: 'Task not found',
+                    },
+                    500: {
+                        description: 'Server error',
+                    },
+                },
+            },
+        },
+        '/tasks/title/{_id}': {
+            put: {
+                tags: ['Tasks'],
+                summary: 'Update the title of a task',
+                parameters: [
+                    {
+                        name: '_id',
+                        in: 'path',
+                        required: true,
+                        description: 'ID of the task',
+                        schema: {
+                            type: 'string',
+                        },
+                    },
+                ],
+                requestBody: {
+                    required: true,
+                    content: {
+                        'application/json': {
+                            schema: {
+                                $ref: '#/components/schemas/taskInput',
+                            },
+                        },
+                    },
+                },
+                responses: {
+                    200: {
+                        description: 'Task title updated successfully',
+                        content: {
+                            'application/json': {
+                                schema: {
+                                    $ref: '#/components/schemas/task',
+                                },
+                            },
+                        },
+                    },
+                    400: {
+                        description: 'Bad request (invalid input)',
+                    },
+                    404: {
+                        description: 'Task not found',
+                    },
+                    500: {
+                        description: 'Server error',
+                    },
+                },
+            },
+        },
     },
-};
+}

@@ -1,72 +1,77 @@
-const Task = require('../models/Tasks');
+const Task = require('../models/Tasks')
 
 const TaskController = {
     async create(req, res) {
         try {
-            const task = await Task.create({ ...req.body, completed: false });
-            res.status(201).json({ message: 'Task created successfully', task });
+            const task = await Task.create(req.body)
+            res.status(201).send(task)
         } catch (error) {
-            console.error(error);
-            res.status(500).json({ message: 'Server error', error });
+            res.status(400).send({ message: error })
         }
     },
-
     async getAll(req, res) {
         try {
-            const tasks = await Task.find();
-            res.status(200).json({ message: 'Tasks retrieved successfully', tasks });
+            const tasks = await Task.find()
+            res.status(200).send(tasks)
         } catch (error) {
-            console.error(error);
-            res.status(500).json({ message: 'Server error', error });
+            res.status(500).send({ message: 'algo ha fallado en el servidor', error })
         }
     },
-
     async getById(req, res) {
         try {
-            const task = await Task.findById(req.params._id);
+            const task = await Task.findById(req.params._id)
             if (!task) {
-                return res.status(404).json({ message: 'Task not found' });
+                return res.status(404).send({ message: 'Task no encontrada' })
             }
-            res.status(200).json({   
- message: 'Task retrieved successfully', task });
+            res.status(200).send(task)
         } catch (error) {
-            console.error(error);
-            res.status(500).json({ message: 'Server error', error });
+            res.status(500).send({ message: 'No encontrado', error })
         }
     },
-
-    async updateTask(req, res) {
+    async update(req, res) {
         try {
-            const task = await Task.findByIdAndUpdate(
-                req.params._id,
-                { title: req.body.title },
-                { new: true }
-            );
-            if (!task) {
-                return res.status(404).json({ message: 'Task not found' });
-            }
-            res.status(200).json({ message: 'Task updated successfully', task });
-        } catch (error)   
- {
-            console.error(error);
-            res.status(500).json({ message: 'Server error', error });
-        }
-    },
+            const paramsId = req.params._id
+            const task = await Task.findById(paramsId)
 
-    async delete(req, res) {
-        try {
-            const task = await Task.findByIdAndDelete(req.params._id);
             if (!task) {
-                return res.status(404).json({ message: 'Task not found' });
+                return res.status(404).send({ message: 'Task no encontrada con ese id' })
             }
-            res.status(200).json({   
- message: 'Task deleted successfully' });
+
+            task.completed = !task.completed
+            await task.save()
+
+            res.status(200).send({ message: 'Task completada', task })
         } catch (error) {
-            console.error(error);
-            res.status(500).json({ message: 'Server error',   
- error });
+            res.status(400).send({ message: 'no se ha podido actualizar el estado', error })
         }
     },
-};
+    async updateTitle(req, res) {
+        try {
+            const task = await Task.findById(req.params._id)
+
+            if (!task) {
+                return res.status(404).send({ message: 'Task no encontrada con ese id' })
+            }
+
+            task.title = req.body.title || task.title
+            await task.save()
+
+            res.status(200).send({ message: 'Título actualizado correctamente', task })
+        } catch (error) {
+            res.status(400).send({ message: 'no se ha podido actualizar el título', error })
+        }
+    },
+    async deleteTask(req, res) {
+        try {
+            const task = await Task.findByIdAndDelete(req.params._id)
+            if (!task) {
+                return res.status(404).send({ message: 'Task no encontrada' })
+            }
+            res.status(200).send({ message: 'Task eliminada con éxito' })
+        } catch (error) {
+            res.status(500).send({ message: 'error', error })
+        }
+    },
+}
 
 module.exports = TaskController

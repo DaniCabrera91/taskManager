@@ -19,7 +19,7 @@ module.exports = {
 					title: {
 						type: 'string',
 						description: "task's title",
-						example: 'Center Div',
+						example: 'Make an excelent readme',
 					},
 					completed: {
 						type: 'boolean',
@@ -34,7 +34,7 @@ module.exports = {
 					title: {
 						type: 'string',
 						description: 'Task name',
-						example: 'Center Div',
+						example: 'Make an excelent readme',
 					},
 				},
 			},
@@ -46,4 +46,3 @@ module.exports = {
 		},
 	},
 }
-   
